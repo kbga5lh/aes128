@@ -80,7 +80,12 @@ fn main() {
     };
 
     println!("Enter a key:");
-    let key = read_key();
+    let key = {
+        let mut key = String::new();
+        std::io::stdin().read_line(&mut key);
+        String::from(key.trim())
+    };
+    let key = format_key(key);
     println!("Your key: {}", key);
 
     let encrypted_string = encrypt(&input.as_bytes(), key.as_bytes());
@@ -89,10 +94,7 @@ fn main() {
     println!("Decrypted string  : {}", bytes_to_string(&decrypted_string));
 }
 
-fn read_key() -> String {
-    let mut key = String::new();
-    std::io::stdin().read_line(&mut key);
-    key = String::from(key.trim());
+fn format_key(mut key: String) -> String {
     if key.len() < NB * NK {
         let chars_to_add = NB * NK - key.len();
         key = key.add(&"\0".repeat(chars_to_add));
